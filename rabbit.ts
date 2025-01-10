@@ -683,5 +683,5 @@ const main = async (embed_url: string, site: string) => {
 var myargs = process.argv.slice(2);
 
 (async () => {
-    let info_video = await main(myargs[0], myargs[1]);
+    return await main(myargs[0], myargs[1]);
 })();
