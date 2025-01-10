@@ -589,7 +589,6 @@ const V = async (url: string) => {
 }
 
 const getMeta = async (url: string) => {
-    console.log(referrer);
     let resp = await fetch(url, {
         "headers": {
             "UserAgent": user_agent,
@@ -631,11 +630,8 @@ function z(a: any) {
 const main = async (embed_url: string, site: string) => {
     referrer = site;
     let xrax = embed_url.split("/").pop().split("?").shift();  //thanks itzzzme
-    console.log(xrax);
-
     let regx = /https:\/\/[a-zA-Z0-9.]*/;
     let base_url = embed_url.match(regx)[0];
-    console.log(base_url);
 
     nodeList.image.src = base_url + "/images/image.png?v=0.0.9";
     let data = new Uint8ClampedArray((await pixels(nodeList.image.src)).data);
@@ -661,7 +657,6 @@ const main = async (embed_url: string, site: string) => {
     } else {
         getSourcesUrl = base_url + "/ajax/" + test[3] + "/" + test[4] + "/getSources?id=" + fake_window.pid + "&v=" + fake_window.localStorage.kversion + "&h=" + fake_window.localStorage.kid + "&b=" + browser_version;
     }
-    console.log(getSourcesUrl);
     let resp_json = await (await fetch(getSourcesUrl, {
         "headers": {
             "User-Agent": user_agent,
@@ -671,8 +666,6 @@ const main = async (embed_url: string, site: string) => {
         "method": "GET",
         "mode": "cors"
     })).json();
-    console.log("\nResponse from getSources:");
-    console.log(resp_json);
 
     let Q3 = fake_window.localStorage.kversion;
     let Q1 = z(Q3);
@@ -680,12 +673,15 @@ const main = async (embed_url: string, site: string) => {
     let Q8: any;
     Q8 = resp_json.t != 0 ? (i(Q5, Q1), Q5) : (Q8 = resp_json.k, i(Q8, Q1), Q8);
 
-
     let str = btoa(String.fromCharCode.apply(null, new Uint8Array(Q8)));
     var real = M(resp_json.sources, str);
-    console.log(real);
+    resp_json['decoded_sources'] = real;
+    console.log(JSON.stringify(resp_json));
+    return resp_json
 }
 
+var myargs = process.argv.slice(2);
 
-main("https://megacloud.tv/embed-2/e-1/3MzsS8GcJQo1?k=1", "https://hianime.to"); //change this value to the embed_url you want
-//the second arguments is the original site you want to extract from, this is needed so it can be used as the referrer
+(async () => {
+    let info_video = await main(myargs[0], myargs[1]);
+})();
